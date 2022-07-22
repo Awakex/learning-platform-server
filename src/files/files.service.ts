@@ -8,7 +8,7 @@ export class FilesService {
   async createFile(file): Promise<string> {
     try {
       //todo: добавить расширение файла
-      const fileName = uuid.v4();
+      const fileName = uuid.v4() + "." + file.originalname.split(".")[1];
       const filePath = path.resolve(__dirname, "..", "static");
       if (!fs.existsSync(filePath)) {
         fs.mkdirSync(filePath, { recursive: true });

@@ -18,7 +18,7 @@ import { User } from "src/schemas/user.schema";
 import { ValidationPipe } from "src/pipes/validation.pipe";
 
 @ApiTags("Пользователи")
-@Controller("/users")
+@Controller("users")
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
