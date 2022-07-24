@@ -10,4 +10,8 @@ export class CreateTaskDto {
   @ApiProperty({ description: "Вопрос для задания", required: false })
   @Prop()
   question: string;
+
+  @ApiProperty({ description: "Тип вопроса" })
+  @Prop()
+  answersType: number;
 }

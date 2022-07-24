@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -77,5 +78,15 @@ export class TasksController {
   @Put("/:id/attach-image")
   attachImage(@Param("id") id: string, @UploadedFile("file") image) {
     return this.tasksService.attachImage(id, image);
+  }
+
+  @ApiOperation({ summary: "Удалить изображение из вопроса" })
+  @ApiResponse({ status: 200, type: Task })
+  @Role(Roles.ADMIN)
+  @UseGuards(RolesGuard)
+  @ApiBearerAuth()
+  @Delete("/:id/image")
+  deleteTaskImage(@Param("id") id: string) {
+    return this.tasksService.deleteTaskImage(id);
   }
 }

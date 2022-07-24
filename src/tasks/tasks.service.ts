@@ -33,10 +33,15 @@ export class TasksService {
 
   async updateTask(taskId: string, dto: CreateTaskDto): Promise<Task> {
     let task = await this.taskModel.findById({ _id: taskId });
+    task.question = dto.question;
+    task.answersType = dto.answersType;
 
-    if (dto.question) {
-      task.question = dto.question;
-    }
+    return task.save();
+  }
+
+  async deleteTaskImage(taskId: string): Promise<Task> {
+    let task = await this.taskModel.findById({ _id: taskId });
+    task.image = "";
 
     return task.save();
   }

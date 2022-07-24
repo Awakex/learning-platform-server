@@ -16,6 +16,10 @@ export class Task {
   @ApiProperty({ description: "Название изображения для вопроса" })
   @Prop()
   image: string;
+
+  @ApiProperty({ description: "Тип ответов" })
+  @Prop()
+  answersType: number;
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);
