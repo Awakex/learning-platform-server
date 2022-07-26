@@ -9,7 +9,7 @@ export type CorrectAnswerDocument = CorrectAnswer & Document;
 export class CorrectAnswer {
   @ApiProperty({ description: "Массив ответов", required: true })
   @Prop()
-  answers: string;
+  answers: string[];
 
   @ApiProperty({
     description: "К какому вопросу привязаны ответы",

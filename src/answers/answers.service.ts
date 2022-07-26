@@ -94,7 +94,9 @@ export class AnswersService {
       );
     }
 
-    if (correctAnswerDto.answers === correctAnswers.answers) {
+    if (
+      correctAnswerDto.answers.toString() === correctAnswers.answers.toString()
+    ) {
       let reward = await this.rewardService.giveRatingByTask(
         request.user._id,
         questionId
