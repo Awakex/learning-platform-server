@@ -9,6 +9,8 @@ import {
   CorrectAnswerDocument,
 } from "../schemas/correct-answer.schema";
 import { CorrectAnswerDto } from "./dto/correct-answer.dto";
+import { IRequestWithAuth } from "../types/IRequestWithAuth";
+import { RewardService } from "../reward/reward.service";
 
 @Injectable()
 export class AnswersService {
@@ -16,7 +18,8 @@ export class AnswersService {
     @InjectModel(Answer.name) private answerModel: Model<AnswerDocument>,
     @InjectModel(CorrectAnswer.name)
     private correctAnswerModel: Model<CorrectAnswerDocument>,
-    private tasksService: TasksService
+    private tasksService: TasksService,
+    private rewardService: RewardService
   ) {}
 
   async createAnswer(
@@ -73,8 +76,9 @@ export class AnswersService {
 
   async checkCorrectAnswers(
     questionId: string,
-    correctAnswerDto: CorrectAnswerDto
-  ): Promise<boolean> {
+    correctAnswerDto: CorrectAnswerDto,
+    request: IRequestWithAuth
+  ): Promise<any> {
     if (!correctAnswerDto.answers || !correctAnswerDto.answers.length) {
       throw new HttpException(
         "Пользователь не выбрал правильные ответы",
@@ -91,9 +95,19 @@ export class AnswersService {
     }
 
     if (correctAnswerDto.answers === correctAnswers.answers) {
-      return true;
+      let reward = await this.rewardService.giveRatingByTask(
+        request.user._id,
+        questionId
+      );
+
+      return {
+        status: true,
+        reward,
+      };
     }
 
-    return false;
+    return {
+      status: false,
+    };
   }
 }

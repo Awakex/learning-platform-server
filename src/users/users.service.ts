@@ -44,6 +44,19 @@ export class UsersService {
     }
   }
 
+  async updatedUserRating(userId: string, rating: number) {
+    let user = await this.getUserById(userId);
+    user.rating = user.rating ? user.rating + rating : rating;
+    try {
+      return user.save();
+    } catch (e) {
+      throw new HttpException(
+        "Ошибка сохранения рейтинга",
+        HttpStatus.BAD_REQUEST
+      );
+    }
+  }
+
   async giveRole(dto: GiveRoleDto) {
     if (!dto.userId || !dto.role) {
       throw new HttpException(

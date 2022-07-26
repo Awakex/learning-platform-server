@@ -10,6 +10,7 @@ import { TasksController } from "./tasks/tasks.controller";
 import { TasksModule } from "./tasks/tasks.module";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { AnswersModule } from './answers/answers.module';
+import { RewardModule } from './reward/reward.module';
 import * as path from "path";
 
 @Module({
@@ -29,6 +30,7 @@ import * as path from "path";
     FilesModule,
     TasksModule,
     AnswersModule,
+    RewardModule,
   ],
 })
 export class AppModule {}

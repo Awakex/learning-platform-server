@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from "@nestjs/common";
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -13,6 +21,8 @@ import { Answer } from "../schemas/answer.schema";
 import { CreateAnswerDto } from "./dto/create-answer.dto";
 import { CorrectAnswerDto } from "./dto/correct-answer.dto";
 import { CorrectAnswer } from "../schemas/correct-answer.schema";
+import { Request } from "express";
+import { IRequestWithAuth } from "../types/IRequestWithAuth";
 
 @ApiTags("Ответы")
 @Controller("answers")
@@ -55,10 +65,14 @@ export class AnswersController {
   @ApiOperation({ summary: "Проверка ответа" })
   @ApiResponse({ status: 200, type: Boolean })
   @Post("/:questionId/check-correct-answers")
+  @Role(Roles.USER)
+  @UseGuards(RolesGuard)
+  @ApiBearerAuth()
   checkCorrectAnswers(
     @Param("questionId") questionId: string,
-    @Body() dto: CorrectAnswerDto
+    @Body() dto: CorrectAnswerDto,
+    @Req() req: IRequestWithAuth
   ) {
-    return this.answersService.checkCorrectAnswers(questionId, dto);
+    return this.answersService.checkCorrectAnswers(questionId, dto, req);
   }
 }

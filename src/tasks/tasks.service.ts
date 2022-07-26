@@ -71,6 +71,10 @@ export class TasksService {
     return task.save();
   }
 
+  async getTaskSettings(taskId: string): Promise<TaskSettings> {
+    return this.taskSettingsModel.findOne({ questionId: taskId });
+  }
+
   async saveTaskSettings(
     questionId: string,
     dto: TaskSettingsDto

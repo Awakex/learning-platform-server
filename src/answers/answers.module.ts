@@ -9,6 +9,7 @@ import {
   CorrectAnswer,
   CorrectAnswerSchema,
 } from "../schemas/correct-answer.schema";
+import { RewardModule } from "src/reward/reward.module";
 
 @Module({
   controllers: [AnswersController],
@@ -19,6 +20,7 @@ import {
       { name: CorrectAnswer.name, schema: CorrectAnswerSchema },
     ]),
     TasksModule,
+    RewardModule,
     forwardRef(() => AuthModule),
   ],
   exports: [AnswersService],

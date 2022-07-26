@@ -30,7 +30,9 @@ export class User {
   @Prop()
   lastName: string;
 
-  @ApiProperty({ example: "Роль", description: "Роль пользователя" })
+  @Prop()
+  rating: number;
+
   @Prop({ type: Role, ref: "Role" })
   role: Role;
 }
