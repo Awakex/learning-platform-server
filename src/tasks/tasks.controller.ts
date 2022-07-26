@@ -23,6 +23,8 @@ import { RolesGuard } from "../auth/roles.guard";
 import { Task } from "../schemas/task.schema";
 import { CreateTaskDto } from "./dto/create-task.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
+import { TaskSettings } from "../schemas/task-settings.schema";
+import { TaskSettingsDto } from "./dto/task-settings.dto";
 
 @ApiTags("Задания")
 @Controller("tasks")
@@ -61,7 +63,7 @@ export class TasksController {
 
   @ApiOperation({ summary: "Получить задание по ID" })
   @ApiResponse({ status: 200, type: Task })
-  @Role(Roles.ADMIN)
+  @Role(Roles.GUEST)
   @UseGuards(RolesGuard)
   @ApiBearerAuth()
   @Get("/:id")
@@ -88,5 +90,18 @@ export class TasksController {
   @Delete("/:id/image")
   deleteTaskImage(@Param("id") id: string) {
     return this.tasksService.deleteTaskImage(id);
+  }
+
+  @ApiOperation({ summary: "Сохранение настроек для задания" })
+  @ApiResponse({ status: 200, type: TaskSettings })
+  @Role(Roles.ADMIN)
+  @UseGuards(RolesGuard)
+  @ApiBearerAuth()
+  @Post("/:id/settings")
+  saveTaskSettings(
+    @Param("id") questionId: string,
+    @Body() dto: TaskSettingsDto
+  ) {
+    return this.tasksService.saveTaskSettings(questionId, dto);
   }
 }

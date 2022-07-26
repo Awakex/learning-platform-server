@@ -5,12 +5,19 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { Answer, AnswerSchema } from "../schemas/answer.schema";
 import { TasksModule } from "../tasks/tasks.module";
 import { AuthModule } from "../auth/auth.module";
+import {
+  CorrectAnswer,
+  CorrectAnswerSchema,
+} from "../schemas/correct-answer.schema";
 
 @Module({
   controllers: [AnswersController],
   providers: [AnswersService],
   imports: [
-    MongooseModule.forFeature([{ name: Answer.name, schema: AnswerSchema }]),
+    MongooseModule.forFeature([
+      { name: Answer.name, schema: AnswerSchema },
+      { name: CorrectAnswer.name, schema: CorrectAnswerSchema },
+    ]),
     TasksModule,
     forwardRef(() => AuthModule),
   ],

@@ -4,11 +4,18 @@ import { Model } from "mongoose";
 import { Task, TaskDocument } from "../schemas/task.schema";
 import { CreateTaskDto } from "./dto/create-task.dto";
 import { FilesService } from "../files/files.service";
+import { TaskSettingsDto } from "./dto/task-settings.dto";
+import {
+  TaskSettings,
+  TaskSettingsDocument,
+} from "../schemas/task-settings.schema";
 
 @Injectable()
 export class TasksService {
   constructor(
     @InjectModel(Task.name) private taskModel: Model<TaskDocument>,
+    @InjectModel(TaskSettings.name)
+    private taskSettingsModel: Model<TaskSettingsDocument>,
     private filesService: FilesService
   ) {}
 
@@ -22,13 +29,21 @@ export class TasksService {
     return tasks;
   }
 
-  async getTask(taskId: string): Promise<Task> {
+  async getTask(
+    taskId: string
+  ): Promise<{ task: Task; settings: TaskSettings }> {
     if (!taskId) {
       throw new HttpException("Не указан ID задания", HttpStatus.BAD_REQUEST);
     }
 
     const task = await this.taskModel.findById(taskId);
-    return task;
+    const settings = await this.taskSettingsModel.findOne({
+      questionId: taskId,
+    });
+    return {
+      task,
+      settings,
+    };
   }
 
   async updateTask(taskId: string, dto: CreateTaskDto): Promise<Task> {
@@ -54,5 +69,45 @@ export class TasksService {
     }
 
     return task.save();
+  }
+
+  async saveTaskSettings(
+    questionId: string,
+    dto: TaskSettingsDto
+  ): Promise<TaskSettings> {
+    if (!questionId) {
+      throw new HttpException("Не указан ID задания", HttpStatus.BAD_REQUEST);
+    }
+
+    if (!dto) {
+      throw new HttpException(
+        "Нет данных для сохранения",
+        HttpStatus.BAD_REQUEST
+      );
+    }
+
+    try {
+      let updatedDto: TaskSettings = {
+        questionId,
+        ...dto,
+      };
+
+      let existedSettings = await this.taskSettingsModel.findOne({
+        questionId,
+      });
+
+      if (existedSettings) {
+        existedSettings.rating = dto.rating;
+        return existedSettings.save();
+      } else {
+        const createdSettings = new this.taskSettingsModel(updatedDto);
+        return createdSettings.save();
+      }
+    } catch (e) {}
+
+    throw new HttpException(
+      "Ошибка сохранения настроек",
+      HttpStatus.BAD_REQUEST
+    );
   }
 }
