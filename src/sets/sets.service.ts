@@ -1,8 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { Sets, SetsDocument } from "src/schemas/sets.schema";
+
 import { CreateSetDto } from "./dto/create-set.dto";
+import { Sets, SetsDocument } from "../schemas/sets.schema";
 
 @Injectable()
 export class SetsService {

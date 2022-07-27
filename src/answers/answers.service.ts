@@ -94,9 +94,11 @@ export class AnswersService {
       );
     }
 
-    if (
-      correctAnswerDto.answers.toString() === correctAnswers.answers.toString()
-    ) {
+    let isCorrect = correctAnswerDto.answers.every((v) =>
+      correctAnswers.answers.includes(v)
+    );
+
+    if (isCorrect) {
       let reward = await this.rewardService.giveRatingByTask(
         request.user._id,
         questionId

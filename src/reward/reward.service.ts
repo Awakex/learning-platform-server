@@ -19,10 +19,7 @@ export class RewardService {
 
     let settings = await this.tasksService.getTaskSettings(taskId);
     if (!settings) {
-      throw new HttpException(
-        "У задания не созданы настройки",
-        HttpStatus.NOT_FOUND
-      );
+      return null;
     }
 
     await this.usersService.updatedUserRating(userId, settings.rating);

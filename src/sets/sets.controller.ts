@@ -48,7 +48,7 @@ export class SetsController {
 
   @ApiOperation({ summary: "Получить комплект по ID" })
   @ApiResponse({ status: 200, type: Sets })
-  @Role(Roles.ADMIN)
+  @Role(Roles.USER)
   @UseGuards(RolesGuard)
   @ApiBearerAuth()
   @Get("/:id")

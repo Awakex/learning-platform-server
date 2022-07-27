@@ -21,7 +21,6 @@ import { Answer } from "../schemas/answer.schema";
 import { CreateAnswerDto } from "./dto/create-answer.dto";
 import { CorrectAnswerDto } from "./dto/correct-answer.dto";
 import { CorrectAnswer } from "../schemas/correct-answer.schema";
-import { Request } from "express";
 import { IRequestWithAuth } from "../types/IRequestWithAuth";
 
 @ApiTags("Ответы")
