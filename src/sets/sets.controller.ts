@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+} from "@nestjs/common";
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -35,5 +44,25 @@ export class SetsController {
   @Get("/")
   getSets() {
     return this.setsService.getSets();
+  }
+
+  @ApiOperation({ summary: "Получить комплект по ID" })
+  @ApiResponse({ status: 200, type: Sets })
+  @Role(Roles.ADMIN)
+  @UseGuards(RolesGuard)
+  @ApiBearerAuth()
+  @Get("/:id")
+  getSet(@Param("id") setId: string) {
+    return this.setsService.getSetById(setId);
+  }
+
+  @ApiOperation({ summary: "Обновить комплект по ID" })
+  @ApiResponse({ status: 200, type: Sets })
+  @Role(Roles.ADMIN)
+  @UseGuards(RolesGuard)
+  @ApiBearerAuth()
+  @Put("/:id")
+  updateSet(@Param("id") setId: string, @Body() dto: CreateSetDto) {
+    return this.setsService.updateSetById(setId, dto);
   }
 }

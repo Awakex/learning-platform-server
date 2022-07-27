@@ -7,4 +7,12 @@ export class TaskSettingsDto {
   @IsString({ message: "Должно быть строкой" })
   @Prop()
   rating: number;
+
+  @ApiProperty({
+    example: "SH1",
+    description: "Идентификатор для помощи в поиске",
+  })
+  @IsString({ message: "Должно быть строкой" })
+  @Prop()
+  search: string;
 }

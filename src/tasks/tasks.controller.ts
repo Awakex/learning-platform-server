@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -47,8 +48,8 @@ export class TasksController {
   @UseGuards(RolesGuard)
   @ApiBearerAuth()
   @Get("/")
-  getTasks() {
-    return this.tasksService.getTasks();
+  getTasks(@Query("withSettings") withSettings: boolean) {
+    return this.tasksService.getTasks(withSettings);
   }
 
   @ApiOperation({ summary: "Изменить задание" })

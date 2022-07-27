@@ -9,7 +9,7 @@ export type SetsDocument = Sets & Document;
 export class Sets {
   @ApiProperty({ description: "Задания" })
   @Prop({ type: [SchemaTypes.ObjectId], ref: Task.name })
-  tasks: Task[];
+  tasks: string[];
 
   @Prop({ type: String, required: true })
   title: string;

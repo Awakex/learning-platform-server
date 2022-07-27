@@ -11,7 +11,7 @@ export class TaskSettings {
     description: "К какому вопросу привязаны настройки",
     required: true,
   })
-  @Prop({ type: SchemaTypes.ObjectId, ref: Task.name })
+  @Prop({ type: SchemaTypes.ObjectId, ref: "Task" })
   questionId: string;
 
   @ApiProperty({
@@ -20,6 +20,12 @@ export class TaskSettings {
   })
   @Prop({ type: Number, required: true })
   rating: number;
+
+  @ApiProperty({
+    description: "Идентификатор для поиска",
+  })
+  @Prop()
+  search: string;
 }
 
 export const TaskSettingsSchema = SchemaFactory.createForClass(TaskSettings);

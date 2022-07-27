@@ -24,26 +24,25 @@ export class TasksService {
     return createdTask.save();
   }
 
-  async getTasks(): Promise<Task[]> {
-    const tasks = await this.taskModel.find();
+  async getTasks(withSettings: boolean = false): Promise<Task[]> {
+    let tasks;
+
+    if (withSettings) {
+      tasks = await this.taskModel.find().populate("settings");
+    } else {
+      tasks = await this.taskModel.find();
+    }
+
     return tasks;
   }
 
-  async getTask(
-    taskId: string
-  ): Promise<{ task: Task; settings: TaskSettings }> {
+  async getTask(taskId: string): Promise<Task> {
     if (!taskId) {
       throw new HttpException("Не указан ID задания", HttpStatus.BAD_REQUEST);
     }
 
-    const task = await this.taskModel.findById(taskId);
-    const settings = await this.taskSettingsModel.findOne({
-      questionId: taskId,
-    });
-    return {
-      task,
-      settings,
-    };
+    const task = await this.taskModel.findById(taskId).populate("settings");
+    return task;
   }
 
   async updateTask(taskId: string, dto: CreateTaskDto): Promise<Task> {
@@ -102,9 +101,13 @@ export class TasksService {
 
       if (existedSettings) {
         existedSettings.rating = dto.rating;
+        existedSettings.search = dto.search;
         return existedSettings.save();
       } else {
         const createdSettings = new this.taskSettingsModel(updatedDto);
+        const task = await this.taskModel.findById(questionId);
+        task.settings = createdSettings;
+        await task.save();
         return createdSettings.save();
       }
     } catch (e) {}

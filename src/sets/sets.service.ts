@@ -23,4 +23,32 @@ export class SetsService {
   async getSets(): Promise<Sets[]> {
     return this.setsModel.find();
   }
+
+  async getSetById(setId: string): Promise<Sets> {
+    let set = await this.setsModel.findById(setId);
+
+    if (!set) {
+      throw new HttpException("Комплект не найден", HttpStatus.NOT_FOUND);
+    }
+
+    return set;
+  }
+
+  async updateSetById(setId: string, dto: CreateSetDto): Promise<Sets> {
+    let set = await this.setsModel.findById(setId);
+
+    if (!set) {
+      throw new HttpException("Комплект не найден", HttpStatus.NOT_FOUND);
+    }
+
+    if (dto.tasks) {
+      set.tasks = dto.tasks;
+    }
+
+    if (dto.title) {
+      set.title = dto.title;
+    }
+
+    return set.save();
+  }
 }

@@ -1,5 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
+import { SchemaTypes } from "mongoose";
+import { TaskSettings } from "./task-settings.schema";
 
 export type TaskDocument = Task & Document;
 
@@ -20,6 +22,10 @@ export class Task {
   @ApiProperty({ description: "Тип ответов" })
   @Prop()
   answersType: number;
+
+  @ApiProperty({ description: "Тип ответов" })
+  @Prop({ type: SchemaTypes.ObjectId, ref: "TaskSettings" })
+  settings: TaskSettings;
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);
