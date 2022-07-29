@@ -10,6 +10,9 @@ import {
   CorrectAnswerSchema,
 } from "../schemas/correct-answer.schema";
 import { RewardModule } from "../reward/reward.module";
+import { LogSetResolveModule } from "../log-set-resolve/log-set-resolve.module";
+import { SetsModule } from "../sets/sets.module";
+import { LogTaskResolveModule } from "../log-task-resolve/log-task-resolve.module";
 
 @Module({
   controllers: [AnswersController],
@@ -21,6 +24,9 @@ import { RewardModule } from "../reward/reward.module";
     ]),
     TasksModule,
     RewardModule,
+    SetsModule,
+    LogSetResolveModule,
+    LogTaskResolveModule,
     forwardRef(() => AuthModule),
   ],
   exports: [AnswersService],

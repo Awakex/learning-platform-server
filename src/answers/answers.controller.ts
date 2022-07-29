@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Req,
   UseGuards,
 } from "@nestjs/common";
@@ -70,8 +71,9 @@ export class AnswersController {
   checkCorrectAnswers(
     @Param("questionId") questionId: string,
     @Body() dto: CorrectAnswerDto,
-    @Req() req: IRequestWithAuth
+    @Req() req: IRequestWithAuth,
+    @Query("setId") setId: string
   ) {
-    return this.answersService.checkCorrectAnswers(questionId, dto, req);
+    return this.answersService.checkCorrectAnswers(questionId, dto, req, setId);
   }
 }

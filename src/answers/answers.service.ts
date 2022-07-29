@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Model, ObjectId } from "mongoose";
 import { Answer, AnswerDocument } from "../schemas/answer.schema";
 import { CreateAnswerDto } from "./dto/create-answer.dto";
 import { TasksService } from "../tasks/tasks.service";
@@ -11,6 +11,9 @@ import {
 import { CorrectAnswerDto } from "./dto/correct-answer.dto";
 import { IRequestWithAuth } from "../types/IRequestWithAuth";
 import { RewardService } from "../reward/reward.service";
+import { LogSetResolveService } from "../log-set-resolve/log-set-resolve.service";
+import { SetsService } from "../sets/sets.service";
+import { LogTaskResolveService } from "../log-task-resolve/log-task-resolve.service";
 
 @Injectable()
 export class AnswersService {
@@ -19,7 +22,10 @@ export class AnswersService {
     @InjectModel(CorrectAnswer.name)
     private correctAnswerModel: Model<CorrectAnswerDocument>,
     private tasksService: TasksService,
-    private rewardService: RewardService
+    private rewardService: RewardService,
+    private logSetResolveService: LogSetResolveService,
+    private logTaskResolveService: LogTaskResolveService,
+    private setsService: SetsService
   ) {}
 
   async createAnswer(
@@ -34,6 +40,31 @@ export class AnswersService {
   async getAnswersByQuestionId(questionId: string): Promise<Answer[]> {
     const answers = await this.answerModel.find({ questionId });
     return answers;
+  }
+
+  async isTaskAlreadyResolved(
+    taskId: string,
+    userId: string
+  ): Promise<boolean> {
+    let log = await this.logTaskResolveService.getResolveLogByTaskIdAndUserId(
+      taskId,
+      userId
+    );
+    return !!log;
+  }
+
+  async isSetAlreadyResolved(setId: string, userId: string): Promise<boolean> {
+    let set = await this.setsService.getSetById(setId, false);
+
+    let logSetResolve =
+      await this.logSetResolveService.getResolveLogBySetIdAndUserId(
+        setId,
+        userId
+      );
+
+    let resolveQuestionIds = logSetResolve.map((v) => v.taskId.toString());
+
+    return set.tasks.every((v) => resolveQuestionIds.includes(v.toString()));
   }
 
   async saveCorrectAnswers(
@@ -77,7 +108,8 @@ export class AnswersService {
   async checkCorrectAnswers(
     questionId: string,
     correctAnswerDto: CorrectAnswerDto,
-    request: IRequestWithAuth
+    request: IRequestWithAuth,
+    setId: string
   ): Promise<any> {
     if (!correctAnswerDto.answers || !correctAnswerDto.answers.length) {
       throw new HttpException(
@@ -87,6 +119,7 @@ export class AnswersService {
     }
 
     let correctAnswers = await this.correctAnswerModel.findOne({ questionId });
+
     if (!correctAnswers) {
       throw new HttpException(
         "У этого вопроса нет ответов",
@@ -94,24 +127,74 @@ export class AnswersService {
       );
     }
 
-    let isCorrect = correctAnswerDto.answers.every((v) =>
-      correctAnswers.answers.includes(v)
+    let isCorrect = correctAnswerDto.answers.every((v) => {
+      return correctAnswers.answers.includes(v);
+    });
+
+    let isSetAlreadyResolved = await this.isSetAlreadyResolved(
+      setId,
+      request.user._id
+    );
+    let isTaskAlreadyResolved = await this.isTaskAlreadyResolved(
+      questionId,
+      request.user._id
     );
 
-    if (isCorrect) {
-      let reward = await this.rewardService.giveRatingByTask(
+    if (!isTaskAlreadyResolved) {
+      await this.logTaskResolveService.saveResolve(
+        questionId,
+        isCorrect,
+        request.user._id
+      );
+    }
+
+    if (setId && !isSetAlreadyResolved) {
+      await this.logSetResolveService.saveResolve(
+        setId,
+        isCorrect,
         request.user._id,
         questionId
       );
-
-      return {
-        status: true,
-        reward,
-      };
     }
 
-    return {
-      status: false,
+    let result: any = {
+      status: isCorrect,
+      isSetAlreadyResolved,
+      isTaskAlreadyResolved,
     };
+
+    //todo: решить как выдавать награду для комплекта
+    if (isCorrect) {
+      let reward;
+      let setReward;
+      if (!isTaskAlreadyResolved) {
+        reward = await this.rewardService.giveRatingByTask(
+          request.user._id,
+          questionId
+        );
+      }
+
+      if (setId) {
+        // смотрим по логам ДО записи нового лога, если на момент проверки сет был не решен,
+        // но после решения мы получаем решенный сет, то выдаем награду
+        let isSetResolvedAfterLastResolve = await this.isSetAlreadyResolved(
+          setId,
+          request.user._id
+        );
+
+        if (!isSetAlreadyResolved && isSetResolvedAfterLastResolve) {
+          setReward = await this.rewardService.giveItemsBySet(
+            request.user._id,
+            setId
+          );
+
+          result.setReward = setReward;
+        }
+      }
+
+      result.reward = reward;
+    }
+
+    return result;
   }
 }

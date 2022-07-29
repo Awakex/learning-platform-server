@@ -13,6 +13,8 @@ import { AnswersModule } from './answers/answers.module';
 import { RewardModule } from './reward/reward.module';
 import { SetsModule } from './sets/sets.module';
 import { ItemsModule } from './items/items.module';
+import { LogSetResolveModule } from './log-set-resolve/log-set-resolve.module';
+import { LogTaskResolveModule } from './log-task-resolve/log-task-resolve.module';
 import * as path from "path";
 
 @Module({
@@ -35,6 +37,8 @@ import * as path from "path";
     RewardModule,
     SetsModule,
     ItemsModule,
+    LogSetResolveModule,
+    LogTaskResolveModule,
   ],
 })
 export class AppModule {}

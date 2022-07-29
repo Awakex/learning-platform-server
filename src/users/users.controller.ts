@@ -9,7 +9,12 @@ import {
   ValidationPipe,
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
-import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from "@nestjs/swagger";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { Role } from "../auth/roles-auth.decorator";
 import { Roles } from "../types/Roles";
@@ -26,6 +31,7 @@ export class UsersController {
   @ApiResponse({ status: 200, type: [User] })
   @Role(Roles.MODERATOR)
   @UseGuards(RolesGuard)
+  @ApiBearerAuth()
   @Get("/")
   getUsers() {
     return this.usersService.findAll();
@@ -50,6 +56,7 @@ export class UsersController {
   @ApiResponse({ status: 200 })
   @Role(Roles.OWNER)
   @UseGuards(RolesGuard)
+  @ApiBearerAuth()
   @Post("/role")
   giveRole(@Body() dto: GiveRoleDto) {
     return this.usersService.giveRole(dto);
