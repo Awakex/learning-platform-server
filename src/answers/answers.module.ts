@@ -9,7 +9,7 @@ import {
   CorrectAnswer,
   CorrectAnswerSchema,
 } from "../schemas/correct-answer.schema";
-import { RewardModule } from "src/reward/reward.module";
+import { RewardModule } from "../reward/reward.module";
 
 @Module({
   controllers: [AnswersController],

@@ -12,6 +12,7 @@ import { ServeStaticModule } from "@nestjs/serve-static";
 import { AnswersModule } from './answers/answers.module';
 import { RewardModule } from './reward/reward.module';
 import { SetsModule } from './sets/sets.module';
+import { ItemsModule } from './items/items.module';
 import * as path from "path";
 
 @Module({
@@ -33,6 +34,7 @@ import * as path from "path";
     AnswersModule,
     RewardModule,
     SetsModule,
+    ItemsModule,
   ],
 })
 export class AppModule {}

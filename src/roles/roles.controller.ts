@@ -1,7 +1,8 @@
 import { Controller, Get, Param, Post } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { Role } from "src/schemas/role.schema";
+
 import { RolesService } from "./roles.service";
+import { Role } from "../schemas/role.schema";
 
 @ApiTags("Роли")
 @Controller("roles")

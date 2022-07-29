@@ -16,7 +16,7 @@ import {
 } from "@nestjs/swagger";
 import { SetsService } from "./sets.service";
 import { Role } from "../auth/roles-auth.decorator";
-import { Roles } from "../../types/Roles";
+import { Roles } from "../types/Roles";
 import { RolesGuard } from "../auth/roles.guard";
 import { Sets } from "../schemas/sets.schema";
 import { CreateSetDto } from "./dto/create-set.dto";

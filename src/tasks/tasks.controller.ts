@@ -19,7 +19,7 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 import { Role } from "../auth/roles-auth.decorator";
-import { Roles } from "../../types/Roles";
+import { Roles } from "../types/Roles";
 import { RolesGuard } from "../auth/roles.guard";
 import { Task } from "../schemas/task.schema";
 import { CreateTaskDto } from "./dto/create-task.dto";

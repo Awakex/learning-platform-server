@@ -15,7 +15,7 @@ import {
 } from "@nestjs/swagger";
 import { AnswersService } from "./answers.service";
 import { Role } from "../auth/roles-auth.decorator";
-import { Roles } from "../../types/Roles";
+import { Roles } from "../types/Roles";
 import { RolesGuard } from "../auth/roles.guard";
 import { Answer } from "../schemas/answer.schema";
 import { CreateAnswerDto } from "./dto/create-answer.dto";

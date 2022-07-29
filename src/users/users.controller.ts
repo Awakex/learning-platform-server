@@ -6,16 +6,16 @@ import {
   Post,
   UseGuards,
   UsePipes,
+  ValidationPipe,
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { Role } from "../auth/roles-auth.decorator";
-import { Roles } from "../../types/Roles";
+import { Roles } from "../types/Roles";
 import { RolesGuard } from "../auth/roles.guard";
 import { GiveRoleDto } from "./dto/give-role.dto";
-import { User } from "src/schemas/user.schema";
-import { ValidationPipe } from "src/pipes/validation.pipe";
+import { User } from "../schemas/user.schema";
 
 @ApiTags("Пользователи")
 @Controller("users")

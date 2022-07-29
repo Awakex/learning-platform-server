@@ -5,7 +5,7 @@ import { UsersController } from "./users.controller";
 
 import { RolesModule } from "../roles/roles.module";
 import { AuthModule } from "../auth/auth.module";
-import { User, UserSchema } from "src/schemas/user.schema";
+import { User, UserSchema } from "../schemas/user.schema";
 
 @Module({
   controllers: [UsersController],
