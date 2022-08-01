@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { SchemaTypes } from "mongoose";
+import { SchemaTypes, Types } from "mongoose";
 import { Task } from "./task.schema";
 import { Item } from "./item.schema";
 
@@ -8,6 +8,8 @@ export type SetsDocument = Set & Document;
 
 @Schema()
 export class Set {
+  _id: Types.ObjectId;
+
   @ApiProperty({ description: "Задания" })
   @Prop({ type: [SchemaTypes.ObjectId], ref: Task.name })
   tasks: string[];

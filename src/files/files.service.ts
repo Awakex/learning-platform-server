@@ -18,7 +18,7 @@ export class FilesService {
       return fileName;
     } catch (e) {
       throw new HttpException(
-        "Произошла ошибка при записи файла",
+        `Произошла ошибка при записи файла, ${e.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR
       );
     }

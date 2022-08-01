@@ -23,6 +23,7 @@ import { RolesGuard } from "../auth/roles.guard";
 import { CreateStoryDto } from "./dto/create-story.dto";
 import { Story } from "../schemas/story.schema";
 import { CreateSubstoryDto } from "./dto/create-substory.dto";
+import { Substory } from "../schemas/substory.schema";
 
 @ApiTags("Сюжеты")
 @Controller("stories")
@@ -69,7 +70,7 @@ export class StoriesController {
     return this.storiesService.updateStory(storyId, dto);
   }
 
-  @ApiOperation({ summary: "Добавить подсюжета" })
+  @ApiOperation({ summary: "Добавить подсюжет" })
   @ApiResponse({ status: 200, type: Story })
   @Role(Roles.ADMIN)
   @UseGuards(RolesGuard)
@@ -87,5 +88,15 @@ export class StoriesController {
     @Query("substoryBlock") substoryBlockId?: string
   ) {
     return this.storiesService.attachSubstory(storyId, dto, substoryBlockId);
+  }
+
+  @ApiOperation({ summary: "Обновить подсюжет" })
+  @ApiResponse({ status: 200, type: Substory })
+  @Role(Roles.ADMIN)
+  @UseGuards(RolesGuard)
+  @ApiBearerAuth()
+  @Put("/substory/:id")
+  updateSubstory(@Param("id") storyId: string, @Body() dto: CreateSubstoryDto) {
+    return this.storiesService.updateSubstory(storyId, dto);
   }
 }

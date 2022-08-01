@@ -9,6 +9,7 @@ import {
   SubstoryBlock,
   SubstoryBlockSchema,
 } from "../schemas/storyblock.schema";
+import { SetsModule } from "../sets/sets.module";
 
 @Module({
   providers: [StoriesService],
@@ -19,6 +20,7 @@ import {
       { name: Substory.name, schema: SubstorySchema },
       { name: SubstoryBlock.name, schema: SubstoryBlockSchema },
     ]),
+    SetsModule,
     forwardRef(() => AuthModule),
   ],
 })

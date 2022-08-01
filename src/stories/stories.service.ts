@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Story, StoryDocument } from "../schemas/story.schema";
-import { Model } from "mongoose";
+import { Model, Schema } from "mongoose";
 import { CreateStoryDto } from "./dto/create-story.dto";
 import { CreateSubstoryDto } from "./dto/create-substory.dto";
 import { Substory, SubstoryDocument } from "../schemas/substory.schema";
@@ -9,6 +9,7 @@ import {
   SubstoryBlock,
   SubstoryBlockDocument,
 } from "../schemas/storyblock.schema";
+import { SetsService } from "../sets/sets.service";
 
 @Injectable()
 export class StoriesService {
@@ -16,7 +17,8 @@ export class StoriesService {
     @InjectModel(Story.name) private storyModel: Model<StoryDocument>,
     @InjectModel(Substory.name) private substoryModel: Model<SubstoryDocument>,
     @InjectModel(SubstoryBlock.name)
-    private substoryBlockModel: Model<SubstoryBlockDocument>
+    private substoryBlockModel: Model<SubstoryBlockDocument>,
+    private setsService: SetsService
   ) {}
 
   async createStory(dto: CreateStoryDto): Promise<Story> {
@@ -32,11 +34,39 @@ export class StoriesService {
   }
 
   async getStories(): Promise<Story[]> {
-    return this.storyModel.find();
+    return this.storyModel.find().populate({
+      path: "storyMap",
+      populate: [
+        {
+          path: "substoryblock",
+          model: SubstoryBlock.name,
+          strictPopulate: false,
+        },
+        {
+          path: "substory",
+          model: Substory.name,
+          strictPopulate: false,
+        },
+      ],
+    });
   }
 
   async getStory(storyId: string): Promise<Story> {
-    return this.storyModel.findById(storyId);
+    return this.storyModel.findById(storyId).populate({
+      path: "storyMap",
+      populate: [
+        {
+          path: "substoryblock",
+          model: SubstoryBlock.name,
+          strictPopulate: false,
+        },
+        {
+          path: "substory",
+          model: Substory.name,
+          strictPopulate: false,
+        },
+      ],
+    });
   }
 
   async updateStory(storyId: string, dto: CreateStoryDto): Promise<Story> {
@@ -51,6 +81,37 @@ export class StoriesService {
     }
 
     return story.save();
+  }
+
+  async updateSubstory(
+    substoryId: string,
+    dto: CreateSubstoryDto
+  ): Promise<Substory> {
+    let substory = await this.substoryModel.findById(substoryId);
+
+    if (!substory) {
+      throw new HttpException("Не найден подсюжет", HttpStatus.NOT_FOUND);
+    }
+
+    if (dto.content) {
+      substory.content = dto.content;
+    }
+
+    if (dto.icon) {
+      substory.icon = dto.icon;
+    }
+
+    if (dto.type) {
+      substory.type = dto.type;
+    }
+
+    if (dto.setId) {
+      let set = await this.setsService.getSetById(dto.setId);
+      // @ts-ignore
+      substory.set = set._id;
+    }
+
+    return substory.save();
   }
 
   async attachSubstory(
@@ -86,11 +147,18 @@ export class StoriesService {
     return story.save().then((t) =>
       t.populate({
         path: "storyMap",
-        populate: {
-          path: "substoryblock",
-          model: SubstoryBlock.name,
-          strictPopulate: false,
-        },
+        populate: [
+          {
+            path: "substoryblock",
+            model: SubstoryBlock.name,
+            strictPopulate: false,
+          },
+          {
+            path: "substory",
+            model: Substory.name,
+            strictPopulate: false,
+          },
+        ],
       })
     );
   }

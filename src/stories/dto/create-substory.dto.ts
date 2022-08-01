@@ -14,4 +14,16 @@ export class CreateSubstoryDto {
   })
   @IsString({ message: "Должно быть строкой" })
   content: string;
+
+  @ApiProperty({
+    description: "Иконка",
+  })
+  @IsString({ message: "Должно быть строкой" })
+  icon: string;
+
+  @ApiProperty({
+    description: "Комплект",
+  })
+  @IsString({ message: "Должно быть строкой" })
+  setId: string;
 }
