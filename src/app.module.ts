@@ -15,6 +15,7 @@ import { SetsModule } from './sets/sets.module';
 import { ItemsModule } from './items/items.module';
 import { LogSetResolveModule } from './log-set-resolve/log-set-resolve.module';
 import { LogTaskResolveModule } from './log-task-resolve/log-task-resolve.module';
+import { StoriesModule } from './stories/stories.module';
 import * as path from "path";
 
 @Module({
@@ -39,6 +40,7 @@ import * as path from "path";
     ItemsModule,
     LogSetResolveModule,
     LogTaskResolveModule,
+    StoriesModule,
   ],
 })
 export class AppModule {}

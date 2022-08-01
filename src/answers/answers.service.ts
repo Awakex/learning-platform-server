@@ -131,10 +131,17 @@ export class AnswersService {
       return correctAnswers.answers.includes(v);
     });
 
-    let isSetAlreadyResolved = await this.isSetAlreadyResolved(
-      setId,
-      request.user._id
-    );
+
+    let isSetAlreadyResolved
+
+    if (setId) {
+      isSetAlreadyResolved = await this.isSetAlreadyResolved(
+          setId,
+          request.user._id
+      );
+    }
+
+
     let isTaskAlreadyResolved = await this.isTaskAlreadyResolved(
       questionId,
       request.user._id

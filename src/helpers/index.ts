@@ -5,7 +5,7 @@ export const getRandomItemsFromArray = (
 
   let items = arr.map((item) => {
     let randomNumber = getRandomNumber(100);
-    if (item.dropRate <= randomNumber) {
+    if (item.dropRate >= randomNumber) {
       return item;
     }
 
